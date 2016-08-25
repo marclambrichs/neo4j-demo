@@ -2,8 +2,9 @@
 :backends:
   - yaml
 :yaml:
-  :datadir: '/etc/puppet/environments/%{::environment}/manifests'
+  :datadir: "/var/lib/hiera"
 :hierarchy:
-  - "node/%{::hostname}"
+  - "nodes/%{::hostname}"
   - "environments/%{::environment}"
   - "common"
+

@@ -56,16 +56,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ### Synced directories
   ### 
   config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.synced_folder '../../puppet/hiera', '/var/lib/hiera'
 #  config.vm.synced_folder '../../manifests', "/etc/puppet/environments/#{env}/manifests"
 #  config.vm.synced_folder '../../modules', "/etc/puppet/environments/#{env}/modules"
-#  config.vm.synced_folder '../../hiera', '/var/lib/hiera'
 
   ### 
   ### Puppet provisioning
   ### 
  config.vm.provision :puppet do |puppet|
-    puppet.environment_path = "../../puppet/environments"
-    puppet.environment = "#{env}"
+    puppet.options           = "--debug --verbose"
+    puppet.environment_path  = "../../puppet/environments"
+    puppet.environment       = "#{env}"
+    puppet.hiera_config_path = "../../puppet/hiera.yaml"
   end
-
 end

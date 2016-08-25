@@ -1,0 +1,9 @@
+[submodule "puppet/environments/single/modules/stdlib"]
+	path = puppet/environments/single/modules/stdlib
+	url = https://github.com/puppetlabs/puppetlabs-stdlib.git
+[submodule "puppet/environments/single/modules/ntp"]
+	path = puppet/environments/single/modules/ntp
+	url = https://github.com/puppetlabs/puppetlabs-ntp.git
+[submodule "puppet/environments/single/modules/concat"]
+	path = puppet/environments/single/modules/concat
+	url = https://github.com/puppetlabs/puppetlabs-concat.git

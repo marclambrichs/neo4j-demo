@@ -1,0 +1,8 @@
+---
+classes:
+  - neo4j
+
+neo4j::address: '0.0.0.0'
+neo4j::version: '2.3.6'
+neo4j::edition: 'enterprise'
+neo4j::http_log_dir: '/var/log/neo4j'
