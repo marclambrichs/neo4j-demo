@@ -10,3 +10,12 @@
 [submodule "puppet/modules/timezone"]
 	path = puppet/modules/timezone
 	url = https://github.com/saz/puppet-timezone.git
+[submodule "puppet/modules/neo4j"]
+	path = puppet/modules/neo4j
+	url = https://github.com/mlambrichs/puppet-neo4j.git
+[submodule "puppet/modules/java"]
+	path = puppet/modules/java
+	url = https://github.com/puppetlabs/puppetlabs-java.git
+[submodule "puppet/modules/archive"]
+	path = puppet/modules/archive
+	url = https://github.com/voxpupuli/puppet-archive.git
