@@ -1,6 +1,5 @@
 ---
 classes:
-  - firewall
   - ntp
   - timezone
 

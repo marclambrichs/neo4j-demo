@@ -19,6 +19,3 @@
 [submodule "puppet/modules/archive"]
 	path = puppet/modules/archive
 	url = https://github.com/voxpupuli/puppet-archive.git
-[submodule "puppet/modules/firewall"]
-	path = puppet/modules/firewall
-	url = https://github.com/puppetlabs/puppetlabs-firewall.git
