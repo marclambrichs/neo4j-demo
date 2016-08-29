@@ -23,47 +23,52 @@ end
   ram = 2048
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # hostmanager
+  config.hostmanager.enabled           = true
+  config.hostmanager.manage_host       = true
+  config.hostmanager.ignore_private_ip = false
+  config.hostmanager.include_offline   = true
 
-  config.vm.box              = 'puppetlabs/centos-7.2-64-puppet'
-  config.vm.box_check_update = true
-  config.ssh.insert_key      = false
+  config.vm.box                        = 'puppetlabs/centos-7.2-64-puppet'
+  config.vm.box_check_update           = true
+  config.ssh.insert_key                = false
 
 ################################################################################
 # Virtualbox(es)
 ################################################################################
 
   config.vm.provider :virtualbox do |vb|
-    vb.name  = "#{env}.neo4j.vagrant"
+    vb.name  = "neo4j.#{env}.vagrant"
     vb.customize [
       'modifyvm', :id,
       '--groups', '/Demo',
       '--memory', "#{ram}",
-      '--cpus', 2
+      '--cpus', 1
     ]
   end
 
   ### 
   ### Networking
   ###
-  config.vm.host_name = "#{env}.neo4j.vagrant"
-  config.vm.network :private_network, ip: '10.10.10.10'
+  config.vm.host_name = "neo4j.#{env}.vagrant"
+  config.vm.network :private_network, ip: "10.0.11.12"
   # http port
-  config.vm.network "forwarded_port", host_ip: "127.0.0.1", guest: 7474, host: 7474
+  config.vm.network :forwarded_port, host_ip: "127.0.0.1", guest: 7474, host: 7474
   # https port
-  config.vm.network "forwarded_port", host_ip: "127.0.0.1", guest: 7473, host: 7473
+  config.vm.network :forwarded_port, host_ip: "127.0.0.1", guest: 7473, host: 7473
 
   ### 
   ### Synced directories
   ### 
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.synced_folder '../../puppet/hiera', '/var/lib/hiera'
-  config.vm.synced_folder '../../puppet/manifests', "/etc/puppet/environments/#{env}/manifests"
-  config.vm.synced_folder '../../puppet/modules', "/etc/puppet/environments/#{env}/modules"
+  config.vm.synced_folder "../../puppet/hiera", "/var/lib/hiera"
+  config.vm.synced_folder "../../puppet/manifests", "/etc/puppet/environments/#{env}/manifests"
+  config.vm.synced_folder "../../puppet/modules", "/etc/puppet/environments/#{env}/modules"
 
   ### 
   ### Puppet provisioning
   ### 
- config.vm.provision :puppet do |puppet|
+  config.vm.provision :puppet do |puppet|
     puppet.options           = "--debug --verbose"
     puppet.environment_path  = "../../puppet/environments"
     puppet.environment       = "#{env}"
