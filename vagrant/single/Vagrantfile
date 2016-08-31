@@ -4,7 +4,7 @@ VAGRANTFILE_API_VERSION = "2"
 ################################################################################
 # check plugins
 ################################################################################
-required_plugins = %w(vagrant-hostmanager vagrant-hosts vagrant-vbguest)
+required_plugins = %w(vagrant-hostmanager vagrant-vbguest)
 
 plugins_to_install = required_plugins.select { |plugin| not Vagrant.has_plugin? plugin }
 if not plugins_to_install.empty?
@@ -25,7 +25,6 @@ end
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.enabled           = true
   config.hostmanager.manage_host       = true
-  config.hostmanager.manage_guest      = true
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline   = true
 
@@ -55,17 +54,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.synced_folder "../../puppet/manifests", "/etc/puppet/environments/#{env}/manifests"
   config.vm.synced_folder "../../puppet/modules", "/etc/puppet/environments/#{env}/modules"
 
+  ###
+  ### Networking
+  ###
   # http port
-  config.vm.network :forwarded_port, host_ip: "127.0.0.1", guest: 7474, host: 7474
+  config.vm.network :forwarded_port, host_ip: "10.10.10.10", guest: 7474, host: 7474
   # https port
-  config.vm.network :forwarded_port, host_ip: "127.0.0.1", guest: 7473, host: 7473
+  config.vm.network :forwarded_port, host_ip: "10.10.10.10", guest: 7473, host: 7473
 
   ### define node
   config.vm.define :neo4j do |node|
     node.vm.hostname         = "neo4j.#{env}.vagrant"
     node.hostmanager.aliases = %w(neo4j.localdomain neo4j)
-    node.vm.network :private_network, ip: "10.0.11.12"
-    node.vm.network :forwarded_port, guest: 22, host: 2130
+    node.vm.network :private_network, ip: "10.10.10.10"
   end
 
   ### 
