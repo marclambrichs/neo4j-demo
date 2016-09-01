@@ -61,6 +61,12 @@ firewall { '22 - ssh':
   action => 'accept'
 }
 
+firewall { '7473 - neo4j':
+  proto  => 'tcp',
+  dport  => '7473',
+  action => 'accept'
+}
+
 firewall { '7474 - neo4j':
   proto  => 'tcp',
   dport  => '7474',
