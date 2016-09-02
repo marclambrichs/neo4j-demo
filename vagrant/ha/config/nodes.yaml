@@ -1,0 +1,40 @@
+---
+- name: neo4j-1
+  cpus: 1
+  ip: 10.10.10.11
+  ports:
+    - guest: 7473
+      host: 7473
+    - guest: 7474
+      host: 7474
+    - guest: 5001
+      host: 5001
+    - guest: 6001
+      host: 6001
+  ram: 2048 
+- name: neo4j-2
+  cpus: 1
+  ip: 10.10.10.12
+  ports:
+    - guest: 7473
+      host: 7483
+    - guest: 7474
+      host: 7484
+    - guest: 5002
+      host: 5002
+    - guest: 6002
+      host: 6002
+  ram: 2048 
+- name: neo4j-3
+  cpus: 1
+  ip: 10.10.10.13
+  ports:
+    - guest: 7473
+      host: 7493
+    - guest: 7474
+      host: 7494
+    - guest: 5003
+      host: 5003
+    - guest: 6003
+      host: 6003
+  ram: 2048 

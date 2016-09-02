@@ -1,6 +1,8 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
+require 'yaml'
+
 ################################################################################
 # check plugins
 ################################################################################
@@ -17,10 +19,14 @@ if not plugins_to_install.empty?
 end
 
 ################################################################################
+# read YAML file with server and box details
+################################################################################
+nodes = YAML.load_file('config/nodes.yaml')
+
+################################################################################
 # Global settings
 ################################################################################
-  env = 'single'
-  ip  = '10.10.10.10'
+  env = 'ha'
   ram = 2048
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -37,16 +43,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 # Virtualbox(es)
 ################################################################################
 
-  config.vm.provider :virtualbox do |vb|
-    vb.name  = "neo4j.#{env}.vagrant"
-    vb.customize [
-      'modifyvm', :id,
-      '--groups', '/Demo',
-      '--memory', "#{ram}",
-      '--cpus', 1
-    ]
-  end
-
   ### 
   ### Synced directories
   ### 
@@ -55,28 +51,34 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.synced_folder "../../puppet/manifests", "/etc/puppet/environments/#{env}/manifests"
   config.vm.synced_folder "../../puppet/modules", "/etc/puppet/environments/#{env}/modules"
 
-  ###
-  ### Networking
-  ###
-  # http port
-  config.vm.network :forwarded_port, host_ip: "#{ip}", guest: 7474, host: 7474
-  # https port
-  config.vm.network :forwarded_port, host_ip: "#{ip}", guest: 7473, host: 7473
+  nodes.each do |srv|
 
-  ### define node
-  config.vm.define :neo4j do |node|
-    node.vm.hostname         = "neo4j.#{env}.vagrant"
-    node.hostmanager.aliases = %w(neo4j.localdomain neo4j)
-    node.vm.network :private_network, ip: "#{ip}"
-  end
+    config.vm.define srv["name"] do |node|
+      node.vm.hostname         = srv["name"] + ".#{env}.vagrant"
 
-  ### 
-  ### Puppet provisioning
-  ### 
-  config.vm.provision :puppet do |puppet|
-    puppet.options           = "--debug --verbose"
-    puppet.environment_path  = "../../puppet/environments"
-    puppet.environment       = "#{env}"
-    puppet.hiera_config_path = "../../puppet/hiera.yaml"
+      node.vm.provider :virtualbox do |vb|
+        vb.name  = srv["name"] + ".#{env}.vagrant"
+        vb.customize [
+          'modifyvm', :id,
+          '--groups', '/Demo',
+          '--memory', srv["ram"],
+          '--cpus', srv["cpus"]
+        ]
+      end
+  
+      ### Networking
+      node.vm.network :private_network, ip: srv["ip"]
+      srv["ports"].each do |port|
+        node.vm.network :forwarded_port, host_ip: "127.0.0.1", guest: port["guest"], host: port["host"]
+      end
+
+      ### Puppet provisioning
+      node.vm.provision :puppet do |puppet|
+        puppet.options           = "--debug --verbose"
+        puppet.environment_path  = "../../puppet/environments"
+        puppet.environment       = "#{env}"
+        puppet.hiera_config_path = "../../puppet/hiera.yaml"
+      end
+    end
   end
 end

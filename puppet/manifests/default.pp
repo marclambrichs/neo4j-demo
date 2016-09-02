@@ -30,6 +30,9 @@ class pre {
 }
 
 class post {
+  Firewall {
+    before => undef
+  }
 
   firewall { '9998 log packet drops':
     jump       => 'LOG',
@@ -41,7 +44,6 @@ class post {
   firewall { '9999 drop all':
     proto  => 'all',
     action => 'drop',
-    before => undef
   }
 }
 
@@ -61,16 +63,43 @@ firewall { '22 - ssh':
   action => 'accept'
 }
 
-firewall { '7473 - neo4j':
-  proto  => 'tcp',
-  dport  => '7473',
+firewall { '123 - ntp':
+  proto  => 'udp',
+  dport  => '123',
   action => 'accept'
 }
 
-firewall { '7474 - neo4j':
+firewall { '7473 - neo4j':
   proto  => 'tcp',
-  dport  => '7474',
+  dport  => [7473, 7474],
   action => 'accept'
 }
 
 notify { $::java_version: }
+
+node 'neo4j-1.ha.vagrant' {
+  firewall { '5001 - neo4j ha':
+    proto  => 'tcp',
+    dport  => [5001, 6001],
+    source => '10.10.10.0/24',
+    action => 'accept'
+  }
+}
+
+node 'neo4j-2.ha.vagrant' {
+  firewall { '5002- neo4j ha':
+    proto  => 'tcp',
+    dport  => [5002, 6002],
+    source => '10.10.10.0/24',
+    action => 'accept'
+  }
+}
+
+node 'neo4j-3.ha.vagrant' {
+  firewall { '5003 - neo4j ha':
+    proto  => 'tcp',
+    dport  => [5003, 6003],
+    source => '10.10.10.0/24',
+    action => 'accept'
+  }
+}
