@@ -6,7 +6,7 @@ require 'yaml'
 ################################################################################
 # check plugins
 ################################################################################
-required_plugins = %w(vagrant-hostmanager vagrant-vbguest)
+required_plugins = %w(vagrant-hostmanager vagrant-cachier vagrant-vbguest)
 
 plugins_to_install = required_plugins.select { |plugin| not Vagrant.has_plugin? plugin }
 if not plugins_to_install.empty?
@@ -35,9 +35,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline   = true
 
-  config.vm.box                        = 'puppetlabs/centos-7.2-64-puppet'
+  config.vm.box                        = 'centos-72-x86_64'
   config.vm.box_check_update           = true
   config.ssh.insert_key                = false
+
+  config.vbguest.auto_update           = true
+
+################################################################################
+# Caching
+################################################################################
+  if Vagrant.has_plugin?("vagrant-cachier")
+    config.cache.scope = :box
+    config.cache.synced_folder_opts = {
+      type: :nfs,
+      mount_ooptions: ['rw', 'vers=3', 'tcp', 'nolock']
+    }
+  end
 
 ################################################################################
 # Virtualbox(es)
