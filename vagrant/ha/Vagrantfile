@@ -45,11 +45,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 # Caching
 ################################################################################
   if Vagrant.has_plugin?("vagrant-cachier")
-    config.cache.scope = :box
-    config.cache.synced_folder_opts = {
-      type: :nfs,
-      mount_ooptions: ['rw', 'vers=3', 'tcp', 'nolock']
-    }
+    config.cache.scope = :machine
   end
 
 ################################################################################
@@ -84,6 +80,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       srv["ports"].each do |port|
         node.vm.network :forwarded_port, host_ip: "127.0.0.1", guest: port["guest"], host: port["host"]
       end
+
+      ### Shell provisioning
+      node.vm.provision "shell", inline: "/sbin/service network restart"
 
       ### Puppet provisioning
       node.vm.provision :puppet do |puppet|
