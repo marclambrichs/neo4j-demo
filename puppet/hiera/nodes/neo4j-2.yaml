@@ -10,6 +10,7 @@ neo4j::http_log_dir: '/var/log/neo4j'
 
 neo4j::ha_server_id: 2
 neo4j::ha_default_timeout: '60s'
+neo4j::ha_join_timeout: '120s'
 neo4j::ha_host_coordination: '10.10.10.12:5002'
 neo4j::ha_host_data: '10.10.10.12:6002'
 neo4j::ha_initial_hosts:
