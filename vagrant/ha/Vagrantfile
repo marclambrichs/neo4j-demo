@@ -6,7 +6,7 @@ require 'yaml'
 ################################################################################
 # check plugins
 ################################################################################
-required_plugins = %w(vagrant-hostmanager vagrant-cachier vagrant-vbguest)
+required_plugins = %w(vagrant-hostmanager vagrant-cachier vagrant-triggers vagrant-vbguest)
 
 plugins_to_install = required_plugins.select { |plugin| not Vagrant.has_plugin? plugin }
 if not plugins_to_install.empty?
@@ -26,8 +26,8 @@ nodes = YAML.load_file('config/nodes.yaml')
 ################################################################################
 # Global settings
 ################################################################################
-  env = 'ha'
-  ram = 2048
+env = 'ha'
+ram = 2048
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.enabled           = true
@@ -35,7 +35,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline   = true
 
-  config.vm.box                        = 'centos-72-x86_64'
+  config.vm.box                        = 'puppetlabs/centos-7.2-64-puppet'
   config.vm.box_check_update           = true
   config.ssh.insert_key                = false
 
@@ -46,6 +46,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 ################################################################################
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :machine
+  end
+
+################################################################################
+# Triggers
+################################################################################
+  if Vagrant.has_plugin?("vagrant-triggers")
+    config.trigger.before :provision do
+      run_remote "service network restart"
+    end
   end
 
 ################################################################################
@@ -80,9 +89,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       srv["ports"].each do |port|
         node.vm.network :forwarded_port, host_ip: "127.0.0.1", guest: port["guest"], host: port["host"]
       end
-
-      ### Shell provisioning
-      node.vm.provision "shell", inline: "/sbin/service network restart"
 
       ### Puppet provisioning
       node.vm.provision :puppet do |puppet|
