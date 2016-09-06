@@ -77,6 +77,9 @@ firewall { '7473 - neo4j':
 
 notify { $::java_version: }
 
+node 'neo4j' {
+}
+
 node 'neo4j-1.ha.vagrant' {
   firewall { '5001 - neo4j ha':
     proto  => 'tcp',
