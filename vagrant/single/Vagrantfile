@@ -4,7 +4,7 @@ VAGRANTFILE_API_VERSION = "2"
 ################################################################################
 # check plugins
 ################################################################################
-required_plugins = %w(vagrant-hostmanager vagrant-vbguest)
+required_plugins = %w(vagrant-hostmanager vagrant-triggers vagrant-vbguest)
 
 plugins_to_install = required_plugins.select { |plugin| not Vagrant.has_plugin? plugin }
 if not plugins_to_install.empty?
@@ -32,6 +32,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box                        = 'puppetlabs/centos-7.2-64-puppet'
   config.vm.box_check_update           = true
   config.ssh.insert_key                = false
+
+################################################################################
+# Triggers
+################################################################################
+  if Vagrant.has_plugin?("vagrant-triggers")
+    config.trigger.before :provision do
+      run_remote "service network restart"
+    end
+  end
 
 ################################################################################
 # Virtualbox(es)
