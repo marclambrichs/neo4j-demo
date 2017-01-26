@@ -1,10 +1,8 @@
 ---
 :backends:
   - yaml
-:yaml:
-  :datadir: "/var/lib/hiera"
 :hierarchy:
-  - "nodes/%{::hostname}"
-  - "environments/%{::environment}"
+  - "nodes/%{::trusted.certname}"
+  - "%{::environment}"
   - "common"
 

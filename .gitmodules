@@ -25,3 +25,9 @@
 [submodule "puppet/modules/systemd"]
 	path = puppet/modules/systemd
 	url = https://github.com/camptocamp/puppet-systemd.git
+[submodule "puppet/single/modules/neo4j"]
+	path = puppet/single/modules/neo4j
+	url = https://github.com/mlambrichs/puppet-neo4j.git
+[submodule "puppet/modules/debconf"]
+	path = puppet/modules/debconf
+	url = https://github.com/smoeding/puppet-debconf.git
