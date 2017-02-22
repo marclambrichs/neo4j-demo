@@ -3,5 +3,10 @@
 .vagrant
 .DS_Store
 
+## EMACS
+*~
+\#*
+.\#*
+
 Gemfile.lock
 
