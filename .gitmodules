@@ -31,3 +31,6 @@
 [submodule "puppet/modules/debconf"]
 	path = puppet/modules/debconf
 	url = https://github.com/smoeding/puppet-debconf.git
+[submodule "puppet/modules/apt"]
+	path = puppet/modules/apt
+	url = https://github.com/puppetlabs/puppetlabs-apt.git

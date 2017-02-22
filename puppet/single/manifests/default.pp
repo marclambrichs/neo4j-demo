@@ -71,7 +71,19 @@ firewall { '123 - ntp':
 
 firewall { '7473 - neo4j':
   proto  => 'tcp',
-  dport  => [7473, 7474, 9000],
+  dport  => '7473',
+  action => 'accept'
+}
+
+firewall { '7474 - neo4j':
+  proto  => 'tcp',
+  dport  => '7474',
+  action => 'accept'
+}
+
+firewall { '9000 - neo4j':
+  proto  => 'tcp',
+  dport  => '9000',
   action => 'accept'
 }
 

@@ -1,7 +1,25 @@
 ---
 classes:
-  - neo4j
+  - roles::database
+
+stacks::bootstrap::repos: true
+stacks::database::neo4j: true
+
+profiles::java::package: 'openjdk-8-jdk'
+profiles::java::package_options:
+  - '-t'
+  - 'jessie-backports'
+
+profiles::repositories::apt_sources:
+  'jessie-backports':
+    comment: 'Necessary to install openjdk-8-jdk'
+    location: 'http://ftp.debian.org/debian'
+    release: 'jessie-backports'
+    repos: 'main'
+    key:
+      id: 'C2518248EEA14886'
+      server: 'pgpkeys.mit.edu'
 
 neo4j::dbms_mode: 'SINGLE'
-neo4j::edition: 'enterprise'
 neo4j::manage_repo: true
+neo4j::release_deb: 'testing/'

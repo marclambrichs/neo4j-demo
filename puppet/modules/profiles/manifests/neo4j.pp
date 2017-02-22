@@ -43,7 +43,7 @@ class profiles::neo4j (
   $manage_repo    = true,
 ){
 
-  class { '::neo4j': 
+  class { '::neo4j':
     dbms_mode      => $dbms_mode,
     edition        => $edition,
     install_method => $install_method,

@@ -1,4 +1,4 @@
-# == Class: profiles::java
+# == Class: profiles::development
 #
 # Full description of class profiles here.
 #
@@ -35,14 +35,23 @@
 #
 # Copyright 2016 Your name here, unless otherwise noted.
 #
-class profiles::java (
-  $package_options = [],  
-  $package         = 'java-1.8.0-openjdk-devel',
-){
+class profiles::development (
+  $packages = $::profiles::development::params::packages,
+) inherits profiles::development::params {
 
-  class { '::java':
-    package_options => $package_options,    
-    package         => $package,
+  apt::source { 'jessie-backports':
+    location => 'http://ftp.debian.org/debian',
+    release  => 'jessie-backports',
+    repos    => 'main',
+    notify   => Exec['apt-get-update'],
+  }
+
+  exec { 'apt-get-update':
+    command => "/usr/bin/apt-get update",
+  }
+
+  package { $packages:
+    ensure => 'installed'
   }
 
 }
