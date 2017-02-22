@@ -20,6 +20,8 @@ profiles::repositories::apt_sources:
       id: 'C2518248EEA14886'
       server: 'pgpkeys.mit.edu'
 
+neo4j::group: 'users'
 neo4j::dbms_mode: 'SINGLE'
 neo4j::manage_repo: true
 neo4j::release_deb: 'testing/'
+
