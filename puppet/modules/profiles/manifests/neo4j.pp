@@ -36,19 +36,33 @@
 # Copyright 2016 Your name here, unless otherwise noted.
 #
 class profiles::neo4j (
-  $dbms_mode      = 'SINGLE',
-  $edition        = 'enterprise',
-  $install_method = 'package',
-  $jmx_enable     = false,
-  $manage_repo    = true,
+  $dbms_mode                      = 'SINGLE',
+  $discovery_advertised_address   = "${::fqdn}:5000",
+  $edition                        = 'enterprise',
+  $group                          = 'neo4j',
+  $initial_discovery_members      = [],
+  $install_method                 = 'package',
+  $jmx_enable                     = false,
+  $manage_repo                    = true,
+  $raft_advertised_address        = "${::fqdn}:7000",
+  $release_rpm                    = 'stable',
+  $release_deb                    = 'stable',
+  $transaction_advertised_address = "${::fqdn}:6000",
 ){
 
   class { '::neo4j':
-    dbms_mode      => $dbms_mode,
-    edition        => $edition,
-    install_method => $install_method,
-    jmx_enable     => $jmx_enable,
-    manage_repo    => $manage_repo,
+    dbms_mode                                        => $dbms_mode,
+    causal_clustering_discovery_advertised_address   => $discovery_advertised_address,
+    causal_clustering_initial_discovery_members      => $initial_discovery_members,
+    causal_clustering_raft_advertised_address        => $raft_advertised_address,
+    causal_clustering_transaction_advertised_address => $transaction_advertised_address,
+    edition                                          => $edition,
+    group                                            => $group,
+    install_method                                   => $install_method,
+    jmx_enable                                       => $jmx_enable,
+    manage_repo                                      => $manage_repo,
+    release_deb                                      => $release_deb,
+    release_rpm                                      => $release_rpm,
   }
 
 }

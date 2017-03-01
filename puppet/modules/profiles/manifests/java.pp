@@ -37,7 +37,7 @@
 #
 class profiles::java (
   $package_options = [],  
-  $package         = 'java-1.8.0-openjdk-devel',
+  $package         = 'java-1.8.0-openjdk',
 ){
 
   class { '::java':

@@ -1,0 +1,17 @@
+---
+classes:
+  - roles::database
+
+stacks::bootstrap::repos: true
+stacks::database::neo4j: true
+
+profiles::neo4j::group: 'users'
+profiles::neo4j::dbms_mode: 'CORE'
+profiles::neo4j::manage_repo: true
+profiles::neo4j::release_rpm: 'testing/'
+
+profiles::neo4j::initial_discovery_members:
+  - core1.causal.vagrant:5000
+  - core2.causal.vagrant:5000
+  - core3.causal.vagrant:5000
+

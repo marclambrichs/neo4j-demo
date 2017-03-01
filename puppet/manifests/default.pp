@@ -71,50 +71,37 @@ firewall { '123 - ntp':
 
 firewall { '7473 - neo4j':
   proto  => 'tcp',
-  dport  => '7473',
+  dport  => [7473, 7474, 9000],
   action => 'accept'
 }
 
-firewall { '7474 - neo4j':
+firewall { '5000 - neo4j discovery':
   proto  => 'tcp',
-  dport  => '7474',
+  dport  => 5000,
+  source => '10.10.10.0/24',
   action => 'accept'
 }
-
-firewall { '9000 - neo4j':
+firewall { '6000 - neo4j tx':
   proto  => 'tcp',
-  dport  => '9000',
+  dport  => 6000,
+  source => '10.10.10.0/24',
   action => 'accept'
 }
-
-notify { $::java_version: }
+firewall { '7000 - neo4j raft':
+  proto  => 'tcp',
+  dport  => 7000,
+  source => '10.10.10.0/24',
+  action => 'accept'
+}  
 
 node 'neo4j' {
 }
 
-node 'neo4j-1.ha.vagrant' {
-  firewall { '5001 - neo4j ha':
-    proto  => 'tcp',
-    dport  => [5001, 6001],
-    source => '10.10.10.0/24',
-    action => 'accept'
-  }
+node 'core1.causal.vagrant' {
 }
 
-node 'neo4j-2.ha.vagrant' {
-  firewall { '5002- neo4j ha':
-    proto  => 'tcp',
-    dport  => [5002, 6002],
-    source => '10.10.10.0/24',
-    action => 'accept'
-  }
+node 'core2.causal.vagrant' {
 }
 
-node 'neo4j-3.ha.vagrant' {
-  firewall { '5003 - neo4j ha':
-    proto  => 'tcp',
-    dport  => [5003, 6003],
-    source => '10.10.10.0/24',
-    action => 'accept'
-  }
+node 'core3.causal.vagrant' {
 }

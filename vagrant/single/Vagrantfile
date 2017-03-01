@@ -61,7 +61,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.synced_folder ".", "/vagrant", disabled: true
   dirs = %w(hieradata manifests)
   dirs.each { |dir|
-    config.vm.synced_folder "../../puppet/#{env}/#{dir}", "/etc/puppetlabs/code/environments/#{env}/#{dir}",
+    config.vm.synced_folder "../../puppet/#{dir}", "/etc/puppetlabs/code/environments/#{env}/#{dir}",
 	:owner => 'root',
 	:group => 'root'
   }

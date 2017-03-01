@@ -1,5 +1,6 @@
 class profiles::repositories (
   $apt_sources = {},
+  $epel        = false,  
 ){
 
   case $::osfamily {
@@ -21,6 +22,12 @@ class profiles::repositories (
       }
 
       Exec['apt-get-update'] -> Package <| |>
+    }
+    'redhat': {
+      if $epel {
+        class { '::epel': }
+        Yumrepo['epel'] -> Package<| |>
+      }
     }
     default: {
       fail("Unsupported osfamily ${::osfamily}")
