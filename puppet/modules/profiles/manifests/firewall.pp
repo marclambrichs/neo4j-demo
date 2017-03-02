@@ -36,7 +36,10 @@
 # Copyright 2016 Your name here, unless otherwise noted.
 #
 class profiles::firewall (
-  $rules = {}
+  $ensure      = 'running',
+  $ntp_enabled = true,
+  $rules       = {},
+  $ssh_enabled = true,
 ){
 
   class { ['profiles::firewall::pre', 'profiles::firewall::post']: } ->
@@ -49,12 +52,26 @@ class profiles::firewall (
     before  => Class['profiles::firewall::post'],
   }
 
-  firewall { '22-ssh':
-    proto  => 'tcp',
-    dport  => '22',
-    action => 'accept',
+  class { '::firewall':
+    ensure => $ensure
   }
 
-  create_resources( 'profiles::firewall::rule', $rules )
+  if $ssh_enabled {
+    firewall { '22-ssh':
+      proto  => 'tcp',
+      dport  => '22',
+      action => 'accept',
+    }
+  }
+
+  if $ntp_enabled {
+    firewall { '123-ntp':
+      proto  => 'udp',
+      dport  => '123',
+      action => 'accept'
+    }
+  }
+
+  create_resources( 'firewall', $rules )
 
 }

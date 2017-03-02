@@ -43,6 +43,7 @@
 # Copyright 2017 Your name here, unless otherwise noted.
 #
 class roles::database () {
+
   class { '::stacks::bootstrap': } ->
   class { '::stacks::database': }
 }

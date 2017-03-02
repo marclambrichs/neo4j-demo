@@ -1,6 +1,11 @@
 class stacks::bootstrap (
-  $repos = false,
+  $firewall = true,
+  $repos    = false,
 ) {
+  
+  if $firewall {
+    class { '::profiles::firewall': }
+  }
   if $repos {
     class { '::profiles::repositories': }
   }
