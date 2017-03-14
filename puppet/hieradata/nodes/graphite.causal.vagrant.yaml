@@ -1,0 +1,107 @@
+---
+classes:
+  - roles::monitoring
+
+stacks::bootstrap::repos: true
+stacks::database::postgresql: true
+stacks::metrics::backend_enabled: true
+stacks::metrics::carbon_enabled: true
+stacks::metrics::grafana_enabled: true
+stacks::metrics::graphite_web_enabled: true
+stacks::metrics::carbon_caches:
+  a:
+    line_receiver_port: 2103  
+    cache_query_port: 7102
+    pickle_receiver_port: 2104
+  b:
+    line_receiver_port: 2203
+    cache_query_port: 7202
+    pickle_receiver_port: 2204
+stacks::webserver::uwsgi_enabled: true
+
+profiles::metrics::graphite_web::databases:
+  default:
+    name: 'graphite'
+    engine: 'django.db.backends.postgresql_psycopg2'
+    user: 'graphite'
+    password: 'secret'
+    host: '127.0.0.1'
+    port: ''
+profiles::metrics::graphite_web::database_engine: 'postgresql'    
+
+profiles::firewall::rules:
+  80-nginx:
+    proto: 'tcp'
+    dport:
+      - 80
+      - 443
+    action: 'accept'
+  2003-relay:
+    proto: 'tcp'
+    dport:
+      - 2003
+    action: 'accept'
+  2014-pickle:
+    proto: 'tcp'
+    dport:
+      - 2014
+    action: 'accept'
+  3000-grafana:
+    proto: 'tcp'
+    dport:
+      - 3000
+    action: 'accept'    
+
+profiles::postgresql::databases:
+  graphite:
+    user: 'graphite'
+    password: 'secret'
+  grafana:
+    user: 'grafana'
+    password: 'secret'
+
+profiles::nginx::upstreams:
+  graphite:
+    ensure: 'present'
+    upstream_cfg_prepend:
+      ip_hash: ''
+      server: '127.0.0.1:3333'
+profiles::nginx::vhosts:
+  graphite.causal.vagrant:
+    use_default_location: false
+    listen_port: 80
+    locations:
+      '/content/':
+        location_alias: '/usr/share/graphite/webapp/content/'
+      '/':
+        uwsgi: 'graphite'
+
+profiles::repositories::epel: true
+profiles::repositories::yum_repos:
+  grafana:
+    descr: 'grafana repo'
+    baseurl: 'https://packagecloud.io/grafana/stable/el/6/$basearch'
+    gpgkey: 'https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana'
+    sslverify: 1
+    sslcacert: '/etc/pki/tls/certs/ca-bundle.crt'
+
+profiles::uwsgi::plugins:
+  - 'uwsgi-plugin-python'
+
+#profiles::uwsgi::socket: '/var/run/uwsgi/%n.sock'
+#profiles::uwsgi::emperor_options:
+#  chmod-socket: '666'
+#  chown-socket: 'uwsgi:uwsgi'    
+
+profiles::uwsgi::apps:
+  graphite:
+    ensure: 'present'
+    gid: 'nginx'    
+    uid: 'nginx'        
+    application_options:
+      plugins-dir: '/usr/lib64/uwsgi'
+      processes: 2
+      plugin: 'python'
+      pymodule-alias: graphite.local_settings=/etc/graphite-web/local_settings.py
+      socket: '127.0.0.1:3333'
+      wsgi-file: '/usr/share/graphite/graphite-web.wsgi'

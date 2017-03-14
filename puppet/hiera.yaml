@@ -3,6 +3,7 @@
   - yaml
 :hierarchy:
   - "nodes/%{::trusted.certname}"
-  - "%{::environment}"
+  - "applications/%{::application}"
+  - "environments/%{::environment}"
   - "common"
 

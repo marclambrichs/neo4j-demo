@@ -1,6 +1,7 @@
 ---
 nodes:
   - name: core1
+    application: neo4j
     hostname: core1.causal.vagrant
     box: bento/centos-7.3
     cpus: 1
@@ -20,6 +21,7 @@ nodes:
       - guest: 9000
         host: 9000	
   - name: core2
+    application: neo4j  
     hostname: core2.causal.vagrant
     box: bento/centos-7.3
     cpus: 1
@@ -39,6 +41,7 @@ nodes:
       - guest: 9000
         host: 9001		
   - name: core3
+    application: neo4j  
     hostname: core3.causal.vagrant
     box: bento/centos-7.3
     cpus: 1
@@ -57,3 +60,14 @@ nodes:
         host: 7002		
       - guest: 9000
         host: 9002	
+  - name: graphite
+    hostname: graphite.causal.vagrant
+    box: bento/centos-7.3
+    cpus: 1
+    ip: 10.10.10.13
+    memory: 4096
+    ports:
+      - guest: 2003
+        host: 2003
+      - guest: 3000
+        host: 3000

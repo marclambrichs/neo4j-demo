@@ -1,0 +1,55 @@
+---
+classes:
+  - roles::database
+
+stacks::bootstrap::repos: true
+stacks::database::neo4j: true
+
+profiles::firewall::rules:
+  7473-neo4j:
+    proto: 'tcp'
+    dport:
+      - 7473
+      - 7474
+      - 9000
+    action: 'accept'
+  5000-neo4j-discovery:
+    proto: 'tcp'
+    dport: 5000
+    source: '10.10.10.0/24'
+    action: 'accept'
+  6000-neo4j-tx:
+    proto: 'tcp'
+    dport: 6000
+    source: '10.10.10.0/24'
+    action: 'accept'
+  7000-neo4j-raft:
+    proto: 'tcp'
+    dport: 7000
+    source: '10.10.10.0/24'
+    action: 'accept'
+
+profiles::neo4j::dbms_mode: 'CORE'
+profiles::neo4j::group: 'users'
+profiles::neo4j::manage_repo: true
+profiles::neo4j::metrics_enabled: true
+profiles::neo4j::metrics_graphite_enabled: true
+profiles::neo4j::metrics_graphite_interval: '60s'
+profiles::neo4j::metrics_graphite_server: 'graphite.causal.vagrant:2003'
+profiles::neo4j::metrics_jvm_buffers_enabled: true
+profiles::neo4j::metrics_jvm_gc_enabled: true
+profiles::neo4j::metrics_jvm_memory_enabled: true
+profiles::neo4j::metrics_jvm_threads_enabled: true
+profiles::neo4j::metrics_neo4j_causal_clustering_enabled: true
+profiles::neo4j::metrics_neo4j_checkpointing_enabled: true
+profiles::neo4j::metrics_neo4j_counts_enabled: true
+profiles::neo4j::metrics_neo4j_enabled: true
+profiles::neo4j::metrics_neo4j_network_enabled: true
+profiles::neo4j::metrics_neo4j_pagecache_enabled: true
+profiles::neo4j::metrics_neo4j_tx_enabled: true
+profiles::neo4j::release_rpm: 'testing/'
+
+profiles::neo4j::initial_discovery_members:
+  - core1.causal.vagrant:5000
+  - core2.causal.vagrant:5000
+  - core3.causal.vagrant:5000

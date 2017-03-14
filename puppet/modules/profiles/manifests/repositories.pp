@@ -1,6 +1,7 @@
 class profiles::repositories (
   $apt_sources = {},
-  $epel        = false,  
+  $epel        = false,
+  $yum_repos   = {},  
 ){
 
   case $::osfamily {
@@ -28,6 +29,11 @@ class profiles::repositories (
         class { '::epel': }
         Yumrepo['epel'] -> Package<| |>
       }
+      $yum_defaults = {
+        enabled  => 1,
+        gpgcheck => 1,
+      }
+      create_resources( 'yumrepo', $yum_repos, $yum_defaults )
     }
     default: {
       fail("Unsupported osfamily ${::osfamily}")

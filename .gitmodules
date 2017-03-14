@@ -37,3 +37,18 @@
 [submodule "puppet/modules/epel"]
 	path = puppet/modules/epel
 	url = https://github.com/stahnma/puppet-module-epel.git
+[submodule "puppet/modules/uwsgi"]
+	path = puppet/modules/uwsgi
+	url = https://github.com/rvdh/puppet-uwsgi.git
+[submodule "puppet/modules/postgresql"]
+	path = puppet/modules/postgresql
+	url = https://github.com/puppetlabs/puppetlabs-postgresql.git
+[submodule "puppet/modules/carbon-c-relay"]
+	path = puppet/modules/carbon-c-relay
+	url = https://github.com/mlambrichs/puppet-carbon_c_relay.git
+[submodule "puppet/modules/carbon"]
+	path = puppet/modules/carbon
+	url = https://github.com/mlambrichs/puppet-carbon.git
+[submodule "puppet/modules/grafana"]
+	path = puppet/modules/grafana
+	url = https://github.com/voxpupuli/puppet-grafana.git

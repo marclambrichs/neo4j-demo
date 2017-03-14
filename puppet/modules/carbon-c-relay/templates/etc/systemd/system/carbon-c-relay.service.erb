@@ -1,0 +1,31 @@
+# <%= @init_file %>: Managed by puppet.
+[Unit]
+Description=Enhanced C implementation of Carbon relay, aggregator and rewriter
+After=network.target
+
+[Service]
+User=<%= @user %>
+Group=<%= @group %>
+EnvironmentFile=/etc/sysconfig/<%= @service_name %>
+ExecStart=/bin/carbon-c-relay -f <%= @config_file %> $ARGS
+ExecReload=/bin/kill -HUP ${MAINPID}
+Type=simple
+<% if @limit_fsize -%>
+# (file size)
+LimitFSIZE=<%= @limit_fsize %>
+<% end -%>
+<% if @limit_cpu -%>
+# (cpu time)
+LimitCPU=<%= @limit_cpu %>
+<% end -%>
+<% if @limit_as -%>
+# (virtual memory size)
+LimitAS=<%= @limit_as %>
+<% end -%>
+# (open files)
+LimitNOFILE=<%= @limit_no_file %>
+# (processes/threads)
+LimitNPROC=<%= @limit_nproc %>
+
+[Install]
+WantedBy=multi-user.target

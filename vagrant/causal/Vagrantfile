@@ -99,6 +99,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         puppet.environment_path  = "../../"
         puppet.environment       = "#{env}"
         puppet.hiera_config_path = "../../#{env}/hiera.yaml"
+        puppet.facter            = { "application" => node['application'] }
       end
     end # end config.vm.define node['name'] do |srv|
   end # end yaml['nodes'].each
