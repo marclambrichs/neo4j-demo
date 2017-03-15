@@ -52,3 +52,6 @@
 [submodule "puppet/modules/grafana"]
 	path = puppet/modules/grafana
 	url = https://github.com/voxpupuli/puppet-grafana.git
+[submodule "puppet/modules/graphite_web"]
+	path = puppet/modules/graphite_web
+	url = https://github.com/mlambrichs/puppet-graphite_web.git
