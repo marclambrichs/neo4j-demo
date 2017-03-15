@@ -62,6 +62,8 @@ nodes:
         host: 9002	
   - name: graphite
     hostname: graphite.causal.vagrant
+    aliases:
+      - grafana.causal.vagrant
     box: bento/centos-7.3
     cpus: 1
     ip: 10.10.10.13
@@ -69,5 +71,3 @@ nodes:
     ports:
       - guest: 2003
         host: 2003
-      - guest: 3000
-        host: 3000

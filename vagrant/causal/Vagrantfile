@@ -55,8 +55,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 ################################################################################
   config.vm.synced_folder ".", "/vagrant", disabled: true  
   yaml['nodes'].each do |node|
+
     config.vm.define node['name'] do |srv|
-      srv.vm.hostname         = node['hostname']      
+      srv.vm.hostname         = node['hostname']
+      if node['aliases'].is_a?(Array) and node['aliases'].length > 0
+        srv.hostmanager.aliases = node['aliases']
+      end
       srv.vm.box              = node['box']
       srv.vm.box_check_update = false
       config.ssh.insert_key   = false

@@ -22,7 +22,7 @@
 class stacks::metrics (
   $backend_enabled            = false,
   $carbon_caches              = {},
-  $carbon_enabled             = false,
+  $carbon_enabled             = true,
   $grafana_enabled            = false,
   $graphite_api_pkg           = 'graphite-api',
   $graphite_interface_enabled = false,

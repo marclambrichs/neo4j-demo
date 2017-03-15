@@ -12,7 +12,6 @@ class graphite_web::config (
   $db_file                        = $::graphite_web::db_file,
   $debug                          = $::graphite_web::config_debug,
   $graphite_root                  = $::graphite_web::config_graphite_root,
-  $group                          = $::graphite_web::group,
   $index_file                     = $::graphite_web::config_index_file,
   $log_cache_performance          = $::graphite_web::config_log_cache_performance,
   $log_dir                        = $::graphite_web::config_log_dir,
@@ -26,7 +25,6 @@ class graphite_web::config (
   $time_zone                      = $::graphite_web::config_time_zone,
   $url_prefix                     = $::graphite_web::config_url_prefix,
   $use_remote_user_authentication = $::graphite_web::config_use_remote_user_authentication,
-  $user                           = $::graphite_web::user,
   $whisper_dir                    = $::graphite_web::config_whisper_dir,
 ) {
     
@@ -38,38 +36,6 @@ class graphite_web::config (
     owner  => 'root',
     group  => 'root',
     mode   => '0755',
-  }
-
-  file { $log_dir:
-    path   => $log_dir,
-    ensure => directory,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755',
-  }
-
-  file { $graphite_root:
-    path => $graphite_root,
-    ensure => directory,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0755',
-  } ->
-
-  file { $storage_dir:
-    path    => $storage_dir,
-    ensure  => directory,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0755',
-  } ->
-
-  file { $index_file:
-    path   => $index_file,
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
   }
   
   concat { $config_file:
@@ -138,8 +104,7 @@ class graphite_web::config (
       
       exec { 'fill postgresql database':
         command     => '/bin/graphite-manage syncdb --noinput',
-        cwd         => $config_dir,
-        refreshonly => false,
+        cwd         => "${graphite_root}/webapp",
         require     => [Concat::Fragment['graphite_web config database configuration'],
                         Package['python-psycopg2']]
       }
@@ -148,7 +113,7 @@ class graphite_web::config (
       exec {'create database':
         command     => 'graphite-manage syncdb --noinput',
         environment => 'PYTHONPATH=/usr/share/graphite/webapp',
-        creates     => $db_file,
+        creates     => "${graphite_root}/storage/graphite.db",
         refreshonly => true,        
         require     => Concat[$config_file],
       }

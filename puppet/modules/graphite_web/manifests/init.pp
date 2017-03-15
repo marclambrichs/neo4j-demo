@@ -30,7 +30,6 @@
 # @param config_url_prefix
 # @param config_use_remote_user_authentication
 # @param config_whisper_dir
-# @param db_file
 # @param graphite_web_ensure
 # @param graphite_web_pkgs
 # @param group
@@ -72,7 +71,6 @@ class graphite_web (
   $config_url_prefix                     = $::graphite_web::params::config_url_prefix,
   $config_use_remote_user_authentication = $::graphite_web::params::config_use_remote_user_authentication,
   $config_whisper_dir                    = $::graphite_web::params::config_whisper_dir,
-  $db_file                               = $::graphite_web::params::db_file,
   $graphite_web_ensure                   = $::graphite_web::params::graphite_web_ensure,
   $graphite_web_pkgs                     = $::graphite_web::params::graphite_web_pkgs,
   $group                                 = $::graphite_web::params::group,
