@@ -7,9 +7,6 @@
 [submodule "puppet/modules/ntp"]
 	path = puppet/modules/ntp
 	url = https://github.com/puppetlabs/puppetlabs-ntp.git
-[submodule "puppet/modules/timezone"]
-	path = puppet/modules/timezone
-	url = https://github.com/saz/puppet-timezone.git
 [submodule "puppet/modules/neo4j"]
 	path = puppet/modules/neo4j
 	url = https://github.com/mlambrichs/puppet-neo4j.git
@@ -64,3 +61,6 @@
 [submodule "puppet/modules/roles"]
 	path = puppet/modules/roles
 	url = https://github.com/mlambrichs/attachmentgenie-roles.git
+[submodule "puppet/modules/timezone"]
+	path = puppet/modules/timezone
+	url = https://github.com/attachmentgenie/attachmentgenie-timezone.git
