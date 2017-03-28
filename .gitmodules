@@ -55,3 +55,12 @@
 [submodule "puppet/modules/graphite_web"]
 	path = puppet/modules/graphite_web
 	url = https://github.com/mlambrichs/puppet-graphite_web.git
+[submodule "puppet/modules/profiles"]
+	path = puppet/modules/profiles
+	url = https://github.com/mlambrichs/attachmentgenie-profiles.git
+[submodule "puppet/modules/stacks"]
+	path = puppet/modules/stacks
+	url = https://github.com/mlambrichs/attachmentgenie-stacks.git
+[submodule "puppet/modules/roles"]
+	path = puppet/modules/roles
+	url = https://github.com/mlambrichs/attachmentgenie-roles.git
