@@ -1,7 +1,7 @@
 ---
-classes:
-  - ntp
-  - timezone
+#classes:
+#  - ntp
+#  - timezone
 
 ntp::servers:
   - ntp.xs4all.nl

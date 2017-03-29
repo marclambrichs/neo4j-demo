@@ -3,18 +3,33 @@
 # ROLE
 #===============================================================================
 classes:
-  - roles::monitoring
+  - roles::metrics
 
 #===============================================================================
 # STACKS
 #===============================================================================
+stacks::bootstrap::firewall: true
+stacks::bootstrap::ntp: true
 stacks::bootstrap::repos: true
+
 stacks::database::postgresql: true
-stacks::metrics::backend_enabled: true
-stacks::metrics::carbon_enabled: true
-stacks::metrics::grafana_enabled: true
-stacks::metrics::graphite_web_enabled: true
-stacks::metrics::carbon_caches:
+
+stacks::monitoring::collectd: true
+
+stacks::metrics::carbon: true
+stacks::metrics::grafana: true
+stacks::metrics::graphite_web: true
+
+stacks::website::nginx: true
+stacks::website::uwsgi: true
+
+#===============================================================================
+# PROFILES
+#===============================================================================
+#-------------------------------------------------------------------------------
+# carbon
+#-------------------------------------------------------------------------------
+profiles::carbon::carbon_caches:
   a:
     line_receiver_port: 2103  
     cache_query_port: 7102
@@ -23,57 +38,67 @@ stacks::metrics::carbon_caches:
     line_receiver_port: 2203
     cache_query_port: 7202
     pickle_receiver_port: 2204
-stacks::webserver::uwsgi_enabled: true
-
-#===============================================================================
-# PROFILES
-#===============================================================================
 
 #-------------------------------------------------------------------------------
-# databases
+# collectd
 #-------------------------------------------------------------------------------
-profiles::postgresql::databases:
-  graphite:
-    user: 'graphite'
-    password: 'secret'
-  grafana:
-    user: 'grafana'
-    password: 'secret'
+profiles::collectd::plugins:
+  'collectd::plugin::write_graphite':
+    carbons:
+      localhost:
+        graphitehost: 'localhost'
+        graphiteport: 2003
+        graphiteprefix: 'collectd.'
+        protocol: 'tcp'
+  'collectd::plugin::disk':
+    disks:
+      - 'sda'
+    manage_package: false
+  'collectd::plugin::cpu':
+    interval: '10s'
 
 #-------------------------------------------------------------------------------
 # firewall
 #-------------------------------------------------------------------------------
-profiles::firewall::rules:
-  80-nginx:
-    proto: 'tcp'
-    dport:
-      - 80
-      - 443
-    action: 'accept'
-  2003-relay:
-    proto: 'tcp'
-    dport:
-      - 2003
-    action: 'accept'
-  2014-pickle:
-    proto: 'tcp'
-    dport:
-      - 2014
-    action: 'accept'
+#profiles::firewall::rules:
+#  80-nginx:
+#    proto: 'tcp'
+#    dport:
+#      - 80
+#      - 443
+#    action: 'accept'
+#  2003-relay:
+#    proto: 'tcp'
+#    dport:
+#      - 2003
+#    action: 'accept'
+#  2014-pickle:
+#    proto: 'tcp'
+#    dport:
+#      - 2014
+#    action: 'accept'
+#
+#-------------------------------------------------------------------------------
+# grafana
+#-------------------------------------------------------------------------------
+profiles::grafana::db_password: 'secret'
+profiles::grafana::install_method: 'repo'
+profiles::grafana::version: 'present'
+
+#profiles::metrics::grafana::cfg_server_http_addr: ''
 
 #-------------------------------------------------------------------------------
-# metrics
+# graphite_web
 #-------------------------------------------------------------------------------
-profiles::metrics::grafana::cfg_server_http_addr: ''
-profiles::metrics::graphite_web::databases:
-  default:
-    name: 'graphite'
-    engine: 'django.db.backends.postgresql_psycopg2'
-    user: 'graphite'
-    password: 'secret'
-    host: '127.0.0.1'
-    port: ''
-profiles::metrics::graphite_web::database_engine: 'postgresql'    
+profiles::graphite_web::carbon_caches:
+  a:
+    line_receiver_port: 2103  
+    cache_query_port: 7102
+    pickle_receiver_port: 2104
+  b:
+    line_receiver_port: 2203
+    cache_query_port: 7202
+    pickle_receiver_port: 2204
 
 #-------------------------------------------------------------------------------
 # nginx
@@ -98,14 +123,27 @@ profiles::nginx::vhosts:
     proxy: 'http://graphite.causal.vagrant:3000'
 
 #-------------------------------------------------------------------------------
+# postgresql
+#-------------------------------------------------------------------------------
+profiles::postgresql::version: '9.2'
+profiles::postgresql::databases:
+  graphite:
+    user: 'graphite'
+    password: 'secret'
+  grafana:
+    user: 'grafana'
+    password: 'secret'
+
+#-------------------------------------------------------------------------------
 # repositories
 #-------------------------------------------------------------------------------
 profiles::repositories::epel: true
-profiles::repositories::yum_repos:
+profiles::repositories::repositories:
   grafana:
     descr: 'grafana repo'
     baseurl: 'https://packagecloud.io/grafana/stable/el/6/$basearch'
     gpgkey: 'https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana'
+    repo_gpgcheck: 1
     sslverify: 1
     sslcacert: '/etc/pki/tls/certs/ca-bundle.crt'
 
@@ -114,11 +152,6 @@ profiles::repositories::yum_repos:
 #-------------------------------------------------------------------------------
 profiles::uwsgi::plugins:
   - 'uwsgi-plugin-python'
-
-#profiles::uwsgi::socket: '/var/run/uwsgi/%n.sock'
-#profiles::uwsgi::emperor_options:
-#  chmod-socket: '666'
-#  chown-socket: 'uwsgi:uwsgi'    
 
 profiles::uwsgi::apps:
   graphite:
