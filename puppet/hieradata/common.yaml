@@ -1,10 +1,35 @@
 ---
-#classes:
-#  - ntp
-#  - timezone
+#===============================================================================
+# ROLE
+#===============================================================================
+
+#===============================================================================
+# STACKS
+#===============================================================================
+stacks::bootstrap::ntp: true
+stacks::monitoring::collectd: true
 
 ntp::servers:
   - ntp.xs4all.nl
   - ntp2.xs4all.nl
 
 timezone::timezone: 'Europe/Amsterdam'
+
+#-------------------------------------------------------------------------------
+# collectd
+#-------------------------------------------------------------------------------
+profiles::collectd::plugins:
+  'collectd::plugin::write_graphite':
+    carbons:
+      graphite.causal.vagrant:
+        graphitehost: 'graphite.causal.vagrant'
+        graphiteport: 2003
+        graphiteprefix: 'collectd.'
+        protocol: 'tcp'
+  'collectd::plugin::disk':
+    disks:
+      - 'sda'
+    manage_package: false
+  'collectd::plugin::cpu':
+    interval: '10s'
+
