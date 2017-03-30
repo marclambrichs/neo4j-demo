@@ -44,6 +44,8 @@ profiles::carbon::carbon_caches:
 # collectd
 #-------------------------------------------------------------------------------
 profiles::collectd::plugins:
+  'collectd::plugin::cpu':
+    interval: '10s'
   'collectd::plugin::write_graphite':
     carbons:
       localhost:
@@ -55,8 +57,17 @@ profiles::collectd::plugins:
     disks:
       - 'sda'
     manage_package: false
-  'collectd::plugin::cpu':
-    interval: '10s'
+  'collectd::plugin::tcpconns':
+    listening: true
+  
+#  tcpconns
+#  df
+#  load
+#  interface
+#  memory
+#  swap
+#  vmem
+#  
 
 #-------------------------------------------------------------------------------
 # firewall
@@ -100,6 +111,10 @@ profiles::graphite_web::carbon_caches:
     line_receiver_port: 2203
     cache_query_port: 7202
     pickle_receiver_port: 2204
+  c:
+    line_receiver_port: 2303
+    cache_query_port: 7302
+    pickle_receiver_port: 2304    
 
 #-------------------------------------------------------------------------------
 # nginx
